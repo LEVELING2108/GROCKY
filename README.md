@@ -368,23 +368,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 👥 Team
-
-- **Full Stack Development** - Grocky Team
-- **AI/ML Implementation** - Grocky Team
-- **UI/UX Design** - Grocky Team
-
----
-
-## 📞 Support
-
-| Type | Contact |
-|------|---------|
-| Technical Support | support@grocky.com |
-| Sales | sales@grocky.com |
-| General Info | hello@grocky.com |
-
----
 
 ## 🙏 Acknowledgments
 
