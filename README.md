@@ -8,8 +8,6 @@
 
 **GROCKY** is a full-stack online grocery management system built with Spring Boot 3, React 18, and AI-driven features for intelligent analytics and recommendations.
 
-![GROCKY Banner](https://via.placeholder.com/1200x400/2ECC71/ffffff?text=GROCKY+Online+Grocery+Store)
-
 ---
 
 ## 📋 Table of Contents
