@@ -1,0 +1,144 @@
+/* Auth Pages Styles */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.auth-logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-logo h1 {
+  font-size: 32px;
+  color: #2C3E50;
+  margin-top: 10px;
+}
+
+.auth-logo span {
+  color: #2ECC71;
+}
+
+.auth-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  background: #f5f6fa;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.auth-toggle button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #7f8c8d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.auth-toggle button.active {
+  background: #2ECC71;
+  color: white;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-group svg {
+  position: absolute;
+  left: 15px;
+  color: #95a5a6;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 15px 15px 15px 50px;
+  border: 2px solid #ecf0f1;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #2ECC71;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+}
+
+.form-row .form-group input {
+  padding-left: 15px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #95a5a6;
+}
+
+.error-message {
+  background: #ffe6e6;
+  color: #e74c3c;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  border-left: 4px solid #e74c3c;
+}
+
+.auth-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.forgot-link {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .auth-card {
+    padding: 30px 20px;
+  }
+}

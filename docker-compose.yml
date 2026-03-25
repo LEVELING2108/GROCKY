@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: grocky-db
+    environment:
+      POSTGRES_DB: grocky_db
+      POSTGRES_USER: grocky_user
+      POSTGRES_PASSWORD: grocky_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  backend:
+    build: ./backend
+    container_name: grocky-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/grocky_db
+      SPRING_DATASOURCE_USERNAME: grocky_user
+      SPRING_DATASOURCE_PASSWORD: grocky_password
+      JWT_SECRET: GrockySecretKeyForJWTTokenGenerationMustBeLongEnough2024
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: grocky-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

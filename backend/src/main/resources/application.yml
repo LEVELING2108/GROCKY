@@ -1,0 +1,107 @@
+# GROCKY Application Configuration
+spring:
+  application:
+    name: GROCKY
+  
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/grocky_db
+    username: grocky_user
+    password: grocky_password
+    driver-class-name: org.postgresql.Driver
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+    open-in-view: false
+  
+  # H2 Console (for development)
+  h2:
+    console:
+      enabled: false
+  
+  # Jackson Configuration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    default-property-inclusion: non_null
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# CORS Configuration
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:5173
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: "*"
+  exposed-headers: Authorization
+  max-age: 3600
+  allow-credentials: true
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:GrockySecretKeyForJWTTokenGenerationMustBeLongEnough2024}
+  expiration: 86400000  # 24 hours
+  refresh-expiration: 604800000  # 7 days
+
+# Application Configuration
+app:
+  name: GROCKY
+  version: 1.0.0
+  
+  # Inventory Settings
+  inventory:
+    low-stock-threshold: 10
+    auto-reorder-enabled: true
+  
+  # Order Settings
+  order:
+    min-order-amount: 10.00
+    free-delivery-threshold: 50.00
+    default-delivery-fee: 5.99
+  
+  # AI Settings
+  ai:
+    recommendation-enabled: true
+    demand-forecasting-enabled: true
+    min-purchases-for-recommendation: 2
+
+# Stripe Configuration
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY:sk_test_mock_secret_key_change_in_production}
+  public-key: ${STRIPE_PUBLIC_KEY:pk_test_mock_public_key_change_in_production}
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.grocky: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

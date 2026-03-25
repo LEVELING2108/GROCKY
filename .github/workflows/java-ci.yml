@@ -1,0 +1,56 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: grocky_db
+          POSTGRES_USER: grocky_user
+          POSTGRES_PASSWORD: grocky_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    
+    - name: Build with Maven
+      run: mvn -B package --file backend/pom.xml
+      env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/grocky_db
+        SPRING_DATASOURCE_USERNAME: grocky_user
+        SPRING_DATASOURCE_PASSWORD: grocky_password
+    
+    - name: Run Tests
+      run: mvn test --file backend/pom.xml
+      env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/grocky_db
+        SPRING_DATASOURCE_USERNAME: grocky_user
+        SPRING_DATASOURCE_PASSWORD: grocky_password
+    
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: grocky-backend
+        path: backend/target/*.jar

@@ -1,0 +1,99 @@
+.sidebar {
+  background-color: var(--white);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-color);
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  color: var(--text-dark);
+}
+
+.sidebar-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 12px;
+  transition: var(--transition);
+  color: var(--text-dark);
+}
+
+.category-btn:hover {
+  background-color: var(--bg-light);
+  color: var(--primary);
+}
+
+.category-btn.active {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+.cat-icon {
+  font-size: 1.2rem;
+  margin-right: 12px;
+}
+
+.cat-name {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.arrow {
+  opacity: 0.5;
+  transition: var(--transition);
+}
+
+.category-btn:hover .arrow {
+  transform: translateX(3px);
+  opacity: 1;
+}
+
+.category-btn.active .arrow {
+  opacity: 1;
+  color: var(--white);
+}
+
+.sidebar-promo {
+  margin-top: 30px;
+  background-color: #FFF9E7;
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px dashed var(--secondary);
+}
+
+.sidebar-promo h4 {
+  color: var(--secondary);
+  margin-bottom: 8px;
+}
+
+.sidebar-promo p {
+  font-size: 0.8rem;
+  margin-bottom: 15px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
