@@ -3,11 +3,16 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "main", "develop" ]
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.yml'
+      - '**.yaml'
   pull_request:
     branches: [ "main", "develop" ]
 
 jobs:
-  build:
+  backend:
     runs-on: ubuntu-latest
 
     services:
@@ -26,31 +31,56 @@ jobs:
           - 5432:5432
 
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@v4
+
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    
+
     - name: Build with Maven
       run: mvn -B package --file backend/pom.xml
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/grocky_db
         SPRING_DATASOURCE_USERNAME: grocky_user
         SPRING_DATASOURCE_PASSWORD: grocky_password
-    
+
     - name: Run Tests
       run: mvn test --file backend/pom.xml
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/grocky_db
         SPRING_DATASOURCE_USERNAME: grocky_user
         SPRING_DATASOURCE_PASSWORD: grocky_password
-    
+
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: grocky-backend
         path: backend/target/*.jar
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./frontend
+
+    - name: Build
+      run: npm run build
+      working-directory: ./frontend
+
+    - name: Type check
+      run: npm run type-check
+      working-directory: ./frontend
