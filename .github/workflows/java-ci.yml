@@ -3,11 +3,6 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "main", "develop" ]
-    paths-ignore:
-      - '**.md'
-      - '**.txt'
-      - '**.yml'
-      - '**.yaml'
   pull_request:
     branches: [ "main", "develop" ]
 
@@ -48,7 +43,7 @@ jobs:
         SPRING_DATASOURCE_PASSWORD: grocky_password
 
     - name: Run Tests
-      run: mvn test --file backend/pom.xml
+      run: mvn test --file backend/pom.xml -Dspring.profiles.active=test
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/grocky_db
         SPRING_DATASOURCE_USERNAME: grocky_user
