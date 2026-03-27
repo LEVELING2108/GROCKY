@@ -19,7 +19,6 @@
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
 - [API Documentation](#-api-documentation)
-- [AI Features](#-ai-features)
 - [Testing](#-testing)
 - [Deployment](#-deployment)
 - [Troubleshooting](#-troubleshooting)
