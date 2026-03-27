@@ -1,24 +1,18 @@
 # Test Configuration for GROCKY Backend
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:postgresql://localhost:5432/grocky_db
+    driver-class-name: org.postgresql.Driver
+    username: grocky_user
+    password: grocky_password
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create-drop
     show-sql: false
     properties:
       hibernate:
         format_sql: true
-  h2:
-    console:
-      enabled: true
-  mail:
-    host: localhost
-    port: 0
 
 # JWT Configuration
 jwt:
