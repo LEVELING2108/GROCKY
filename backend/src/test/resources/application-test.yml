@@ -1,35 +1,29 @@
 # Test Configuration for GROCKY Backend
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/grocky_db}
+    driver-class-name: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME:grocky_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:grocky_password}
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create-drop
     show-sql: false
     properties:
       hibernate:
         format_sql: true
-  h2:
-    console:
-      enabled: true
-  mail:
-    host: localhost
-    port: 0
 
 # JWT Configuration
 jwt:
-  secret: TestSecretKeyForTestingPurposesOnly1234567890
+  secret: ${JWT_SECRET:TestSecretKeyForTestingPurposesOnly1234567890}
   expiration: 3600000  # 1 hour
   refresh-expiration: 7200000  # 2 hours
 
 # Stripe Configuration (test mode)
 stripe:
-  secret-key: sk_test_mock
-  public-key: pk_test_mock
+  secret-key: ${STRIPE_SECRET_KEY:sk_test_mock}
+  public-key: ${STRIPE_PUBLIC_KEY:pk_test_mock}
 
 # Logging
 logging:
