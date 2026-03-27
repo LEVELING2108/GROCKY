@@ -35,22 +35,22 @@ public class CartService {
     }
     
     @Transactional
-    public CartDTO addToCart(UUID customerId, CartDTO.AddToCart addToCart) {
+    public CartDTO addToCart(UUID customerId, CartDTO.AddToCartRequest addToCart) {
         log.info("Adding product {} to cart for customer {}", addToCart.getProductId(), customerId);
-        
+
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        
+
         Product product = productRepository.findById(addToCart.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-        
+
         if (!product.getIsAvailable()) {
             throw new RuntimeException("Product is not available");
         }
-        
+
         Cart cartItem = cartRepository.findByCustomerIdAndProductId(customerId, addToCart.getProductId())
                 .orElse(null);
-        
+
         if (cartItem != null) {
             // Update quantity
             cartItem.setQuantity(cartItem.getQuantity() + addToCart.getQuantity());
@@ -62,15 +62,15 @@ public class CartService {
                     .quantity(addToCart.getQuantity())
                     .build();
         }
-        
+
         cartRepository.save(cartItem);
         log.info("Added to cart successfully");
-        
+
         return getCartByCustomer(customerId);
     }
-    
+
     @Transactional
-    public CartDTO updateQuantity(UUID customerId, UUID productId, CartDTO.UpdateQuantity updateQuantity) {
+    public CartDTO updateQuantity(UUID customerId, UUID productId, CartDTO.UpdateQuantityRequest updateQuantity) {
         log.info("Updating quantity for product {} in cart", productId);
         
         Cart cartItem = cartRepository.findByCustomerIdAndProductId(customerId, productId)

@@ -1,9 +1,15 @@
 package com.grocky.service;
 
+import com.grocky.dto.AnalyticsDTO;
 import com.grocky.entity.Analytics;
 import com.grocky.entity.Order;
 import com.grocky.entity.OrderStatus;
 import com.grocky.entity.Product;
+import com.grocky.repository.AnalyticsRepository;
+import com.grocky.repository.CustomerRepository;
+import com.grocky.repository.OrderItemRepository;
+import com.grocky.repository.OrderRepository;
+import com.grocky.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
@@ -173,15 +179,25 @@ public class AnalyticsService {
     @Transactional
     public void recordMetric(String metricType, String metricName, BigDecimal value, Map<String, Object> metadata) {
         log.debug("Recording metric: {} - {}", metricType, metricName);
-        
+
+        String metadataJson = null;
+        if (metadata != null) {
+            try {
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                metadataJson = mapper.writeValueAsString(metadata);
+            } catch (Exception e) {
+                log.error("Failed to serialize metadata", e);
+            }
+        }
+
         Analytics analytics = Analytics.builder()
                 .metricType(metricType)
                 .metricName(metricName)
                 .metricValue(value)
-                .metadata(metadata)
+                .metadata(metadataJson)
                 .recordedDate(LocalDate.now())
                 .build();
-        
+
         analyticsRepository.save(analytics);
     }
     

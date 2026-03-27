@@ -24,6 +24,25 @@ class ApiServiceError extends Error {
 }
 
 export const apiService = {
+  // Generic GET method
+  get: async <T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> => {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        ...getHeaders(),
+        ...options.headers,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new ApiServiceError(response.status, data.error || data.message || 'API Error');
+    }
+
+    return data;
+  },
+
   private: async <T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> => {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       ...options,

@@ -8,7 +8,7 @@ import com.grocky.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
-import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,7 +62,7 @@ public class AICustomerSegmentationService {
             double[] normalizedValues = normalizeValues(
                     dataPoint.recency,
                     dataPoint.frequency,
-                    dataPoint.monetary
+                    dataPoint.monetary.doubleValue()
             );
             points.add(new DoublePoint(normalizedValues));
         }
@@ -72,7 +73,7 @@ public class AICustomerSegmentationService {
                 MAX_ITERATIONS
         );
 
-        List<Cluster<DoublePoint>> clusters = clusterer.cluster(points);
+        List<CentroidCluster<DoublePoint>> clusters = clusterer.cluster(points);
 
         // Map clusters to customer segments
         Map<Integer, String> clusterSegments = assignSegmentLabels(clusters, dataPoints);
@@ -81,7 +82,7 @@ public class AICustomerSegmentationService {
         List<AnalyticsDTO.CustomerInsight> insights = new ArrayList<>();
         for (int i = 0; i < dataPoints.size(); i++) {
             CustomerDataPoint dp = dataPoints.get(i);
-            int clusterId = findCustomerCluster(dp, clusters, points);
+            int clusterId = findCustomerCluster(dp, clusters, points, dataPoints);
             String segment = clusterSegments.get(clusterId);
 
             insights.add(new AnalyticsDTO.CustomerInsight(
@@ -181,11 +182,11 @@ public class AICustomerSegmentationService {
     /**
      * Assign meaningful labels to clusters based on their centroids
      */
-    private Map<Integer, String> assignSegmentLabels(List<Cluster<DoublePoint>> clusters, List<CustomerDataPoint> dataPoints) {
+    private Map<Integer, String> assignSegmentLabels(List<CentroidCluster<DoublePoint>> clusters, List<CustomerDataPoint> dataPoints) {
         Map<Integer, String> labels = new HashMap<>();
 
         for (int i = 0; i < clusters.size(); i++) {
-            Cluster<DoublePoint> cluster = clusters.get(i);
+            CentroidCluster<DoublePoint> cluster = clusters.get(i);
             double[] centroid = cluster.getCenter().getPoint();
 
             // Analyze cluster characteristics
@@ -211,14 +212,18 @@ public class AICustomerSegmentationService {
     /**
      * Find which cluster a customer belongs to
      */
-    private int findCustomerCluster(CustomerDataPoint dp, List<Cluster<DoublePoint>> clusters, List<DoublePoint> points) {
-        DoublePoint customerPoint = points.get(dataPoints.indexOf(dp));
+    private int findCustomerCluster(CustomerDataPoint dp, List<CentroidCluster<DoublePoint>> clusters, List<DoublePoint> points, List<CustomerDataPoint> allDataPoints) {
+        int dpIndex = allDataPoints.indexOf(dp);
+        if (dpIndex < 0 || dpIndex >= points.size()) {
+            return 0;
+        }
+        DoublePoint customerPoint = points.get(dpIndex);
 
         int bestCluster = 0;
         double minDistance = Double.MAX_VALUE;
 
         for (int i = 0; i < clusters.size(); i++) {
-            double distance = distance(customerPoint, clusters.get(i).getCenter());
+            double distance = distance(customerPoint.getPoint(), clusters.get(i).getCenter().getPoint());
             if (distance < minDistance) {
                 minDistance = distance;
                 bestCluster = i;
@@ -228,9 +233,7 @@ public class AICustomerSegmentationService {
         return bestCluster;
     }
 
-    private double distance(DoublePoint p1, DoublePoint p2) {
-        double[] point1 = p1.getPoint();
-        double[] point2 = p2.getPoint();
+    private double distance(double[] point1, double[] point2) {
         double sum = 0;
         for (int i = 0; i < point1.length; i++) {
             sum += Math.pow(point1[i] - point2[i], 2);
@@ -260,7 +263,7 @@ public class AICustomerSegmentationService {
         int monthsAsCustomer = 1;
         if (firstOrder.isPresent()) {
             monthsAsCustomer = Math.max(1, Period.between(
-                    firstOrder.get().getCreatedAt().toLocalDate(),
+                    firstOrder.get().getCreatedAt().atZone(ZoneId.systemDefault()).toLocalDate(),
                     LocalDate.now()
             ).getMonths());
         }

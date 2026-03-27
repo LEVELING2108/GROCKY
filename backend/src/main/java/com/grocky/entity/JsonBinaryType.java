@@ -1,35 +1,21 @@
 package com.grocky.entity;
 
-import org.hibernate.type.SqlTypes;
-import org.hibernate.type.descriptor.converter.spi.BasicValueConverter;
-
-import java.util.Map;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 /**
- * Custom converter for JSONB type in PostgreSQL
+ * Custom converter for JSONB type in PostgreSQL (Hibernate 6 compatible)
  */
-public class JsonBinaryType implements BasicValueConverter<String, Object> {
-    
+@Converter(autoApply = true)
+public class JsonBinaryType implements AttributeConverter<String, String> {
+
     @Override
-    public Object toDomainValue(String jdbcValue) {
-        return jdbcValue;
+    public String convertToDatabaseColumn(String attribute) {
+        return attribute;
     }
-    
+
     @Override
-    public String toJdbcValue(Object domainValue) {
-        if (domainValue == null) {
-            return null;
-        }
-        return domainValue.toString();
-    }
-    
-    @Override
-    public Class<String> getJdbcJavaType() {
-        return String.class;
-    }
-    
-    @Override
-    public int getJdbcTypeCode() {
-        return SqlTypes.JSON;
+    public String convertToEntityAttribute(String dbData) {
+        return dbData;
     }
 }

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.Type;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -49,14 +48,15 @@ public class Customer {
     @Column(name = "zip_code", length = 10)
     private String zipCode;
     
-    @Column(name = "loyalty_points", defaultValue = "0")
+    @Column(name = "loyalty_points")
+    @Builder.Default
     private Integer loyaltyPoints = 0;
-    
+
     @Column(name = "ai_preference_profile", columnDefinition = "jsonb")
-    @Type(JsonBinaryType.class)
     private String aiPreferenceProfile;
-    
-    @Column(name = "is_active", defaultValue = "true")
+
+    @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
     
     @CreationTimestamp

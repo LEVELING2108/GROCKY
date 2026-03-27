@@ -34,11 +34,12 @@ public class Review {
     
     @Column(nullable = false)
     private Integer rating;  // 1-5
-    
+
     @Column(columnDefinition = "TEXT")
     private String comment;
-    
-    @Column(name = "is_verified_purchase", defaultValue = "true")
+
+    @Column(name = "is_verified_purchase")
+    @Builder.Default
     private Boolean isVerifiedPurchase = true;
     
     @CreationTimestamp

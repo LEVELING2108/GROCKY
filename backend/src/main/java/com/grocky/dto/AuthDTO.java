@@ -8,12 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+/**
+ * DTO container for authentication-related DTOs
+ */
 public class AuthDTO {
-    
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -22,11 +21,11 @@ public class AuthDTO {
         @NotBlank(message = "Email is required")
         @Email(message = "Invalid email format")
         private String email;
-        
+
         @NotBlank(message = "Password is required")
         private String password;
     }
-    
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -35,22 +34,22 @@ public class AuthDTO {
         @NotBlank(message = "Name is required")
         @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
         private String name;
-        
+
         @NotBlank(message = "Email is required")
         @Email(message = "Invalid email format")
         private String email;
-        
+
         @NotBlank(message = "Password is required")
         @Size(min = 6, message = "Password must be at least 6 characters")
         private String password;
-        
+
         private String phone;
         private String address;
         private String city;
         private String state;
         private String zipCode;
     }
-    
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -62,7 +61,7 @@ public class AuthDTO {
         private String name;
         private java.util.UUID userId;
     }
-    
+
     @Data
     @Builder
     @NoArgsConstructor

@@ -51,22 +51,31 @@ public class CartDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AddToCart {
+    public static class AddToCartRequest {
         @NotNull(message = "Product ID is required")
         private UUID productId;
-        
+
         @Min(value = 1, message = "Quantity must be at least 1")
         @Builder.Default
         private Integer quantity = 1;
     }
-    
+
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UpdateQuantity {
+    public static class UpdateQuantityRequest {
         @NotNull(message = "Quantity is required")
         @Min(value = 1, message = "Quantity must be at least 1")
         private Integer quantity;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CartResponse {
+        private CartDTO cart;
+        private String message;
     }
 }

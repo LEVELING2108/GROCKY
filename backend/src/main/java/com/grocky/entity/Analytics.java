@@ -3,7 +3,6 @@ package com.grocky.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,7 +35,6 @@ public class Analytics {
     private BigDecimal metricValue;
     
     @Column(columnDefinition = "jsonb")
-    @Type(JsonBinaryType.class)
     private String metadata;
     
     @Column(name = "recorded_date", nullable = false)

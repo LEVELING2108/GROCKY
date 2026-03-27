@@ -30,7 +30,7 @@ public class OrderController {
 
     @GetMapping("/number/{orderNumber}")
     public ResponseEntity<OrderDTO> getOrderByNumber(@PathVariable String orderNumber) {
-        return ResponseEntity.ok(orderService.getOrderByNumber(orderNumber));
+        return ResponseEntity.ok(orderService.getOrderByOrderNumber(orderNumber));
     }
 
     @GetMapping("/customer/{customerId}")
@@ -39,8 +39,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-        return new ResponseEntity<>(orderService.createOrder(orderDTO), HttpStatus.CREATED);
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO.CreateOrder createOrder) {
+        return new ResponseEntity<>(orderService.createOrder(createOrder), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}/status")

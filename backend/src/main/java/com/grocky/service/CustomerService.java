@@ -94,14 +94,20 @@ public class CustomerService {
     @Transactional
     public CustomerDTO addLoyaltyPoints(UUID id, Integer points) {
         log.info("Adding {} loyalty points to customer: {}", points, id);
-        
+
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        
+
         customer.setLoyaltyPoints(customer.getLoyaltyPoints() + points);
         Customer updated = customerRepository.save(customer);
-        
+
         return convertToDTO(updated);
+    }
+
+    @Transactional
+    public CustomerDTO updateLoyaltyPoints(UUID id, Integer pointsChange) {
+        log.info("Updating loyalty points by {} for customer: {}", pointsChange, id);
+        return addLoyaltyPoints(id, pointsChange);
     }
     
     @Transactional
@@ -143,8 +149,8 @@ public class CustomerService {
                 .loyaltyPoints(customer.getLoyaltyPoints())
                 .aiPreferenceProfile(customer.getAiPreferenceProfile())
                 .isActive(customer.getIsActive())
-                .createdAt(customer.getCreatedAt())
-                .updatedAt(customer.getUpdatedAt())
+                .createdAt(customer.getCreatedAt() != null ? java.time.LocalDateTime.ofInstant(customer.getCreatedAt(), java.time.ZoneId.systemDefault()) : null)
+                .updatedAt(customer.getUpdatedAt() != null ? java.time.LocalDateTime.ofInstant(customer.getUpdatedAt(), java.time.ZoneId.systemDefault()) : null)
                 .build();
     }
 }

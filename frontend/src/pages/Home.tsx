@@ -19,15 +19,15 @@ const Home: React.FC = () => {
       try {
         // Fetch trending products for everyone
         const trendingRes = await apiService.get('/recommendations/trending?limit=4');
-        if (trendingRes.success) setTrendingProducts(trendingRes.data);
+        if (trendingRes.success) setTrendingProducts(trendingRes.data as any[]);
 
         // Fetch personalized recommendations if user is logged in
         if (user?.userId) {
           const recommendedRes = await apiService.get(`/recommendations/personal/${user.userId}?limit=4`);
-          if (recommendedRes.success) setRecommendedProducts(recommendedRes.data);
+          if (recommendedRes.success) setRecommendedProducts(recommendedRes.data as any[]);
         } else {
           // Use trending as recommendations if not logged in
-          setRecommendedProducts(trendingRes.data);
+          setRecommendedProducts(trendingRes.data as any[]);
         }
       } catch (err) {
         console.error("Failed to fetch data", err);

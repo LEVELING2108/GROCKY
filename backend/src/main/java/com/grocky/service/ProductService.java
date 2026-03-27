@@ -319,8 +319,8 @@ public class ProductService {
                 .aiDemandScore(product.getAiDemandScore())
                 .aiReorderSuggestion(product.getAiReorderSuggestion())
                 .finalPrice(finalPrice)
-                .createdAt(product.getCreatedAt())
-                .updatedAt(product.getUpdatedAt())
+                .createdAt(product.getCreatedAt() != null ? java.time.LocalDateTime.ofInstant(product.getCreatedAt(), java.time.ZoneId.systemDefault()) : null)
+                .updatedAt(product.getUpdatedAt() != null ? java.time.LocalDateTime.ofInstant(product.getUpdatedAt(), java.time.ZoneId.systemDefault()) : null)
                 .build();
     }
 }

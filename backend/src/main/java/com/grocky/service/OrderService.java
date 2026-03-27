@@ -226,12 +226,19 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<OrderDTO> getOrdersDueForDelivery() {
         log.debug("Fetching orders due for delivery");
-        return orderRepository.findOrdersDueForDelivery(OrderStatus.PENDING, LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
+        return orderRepository.findOrdersDueForDelivery(OrderStatus.PENDING, LocalDateTime.now())
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
     }
-    
+
+    @Transactional(readOnly = true)
+    public Page<OrderDTO> getOrdersByCustomerId(UUID customerId, Pageable pageable) {
+        log.debug("Fetching orders for customer: {}", customerId);
+        return orderRepository.findByCustomerId(customerId, pageable)
+                .map(this::convertToDTO);
+    }
+
     @Transactional(readOnly = true)
     public BigDecimal getOrderStatistics(UUID customerId) {
         return orderRepository.sumTotalOrdersByCustomer(customerId).orElse(BigDecimal.ZERO);

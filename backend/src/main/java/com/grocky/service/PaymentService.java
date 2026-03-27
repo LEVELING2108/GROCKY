@@ -3,6 +3,7 @@ package com.grocky.service;
 import com.grocky.dto.PaymentDTO;
 import com.grocky.entity.Order;
 import com.grocky.entity.Payment;
+import com.grocky.entity.PaymentStatus;
 import com.grocky.repository.OrderRepository;
 import com.grocky.repository.PaymentRepository;
 import com.stripe.Stripe;
@@ -104,7 +105,7 @@ public class PaymentService {
                 .paymentMethod(createPayment.getPaymentMethod())
                 .paymentGateway(createPayment.getPaymentGateway())
                 .amount(order.getTotalAmount())
-                .status("PENDING")
+                .status(PaymentStatus.PENDING)
                 .build();
         
         Payment saved = paymentRepository.save(payment);
@@ -121,14 +122,14 @@ public class PaymentService {
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
 
         if (success) {
-            payment.setStatus("COMPLETED");
+            payment.setStatus(PaymentStatus.COMPLETED);
             payment.setTransactionId(transactionId);
             payment.setGatewayResponse(gatewayResponse);
             payment.setProcessedAt(Instant.now());
 
             // Update order payment status
             Order order = payment.getOrder();
-            order.setPaymentStatus("COMPLETED");
+            order.setPaymentStatus(PaymentStatus.COMPLETED);
             order.setStatus(com.grocky.entity.OrderStatus.CONFIRMED);
             orderRepository.save(order);
 
@@ -140,11 +141,11 @@ public class PaymentService {
 
             log.info("Payment completed successfully: {}", transactionId);
         } else {
-            payment.setStatus("FAILED");
+            payment.setStatus(PaymentStatus.FAILED);
             payment.setGatewayResponse(gatewayResponse);
 
             Order order = payment.getOrder();
-            order.setPaymentStatus("FAILED");
+            order.setPaymentStatus(PaymentStatus.FAILED);
             orderRepository.save(order);
 
             log.warn("Payment failed: {}", paymentId);
@@ -176,9 +177,9 @@ public class PaymentService {
                 .orderNumber(payment.getOrder().getOrderNumber())
                 .paymentMethod(payment.getPaymentMethod())
                 .amount(payment.getAmount())
-                .status(payment.getStatus())
+                .status(payment.getStatus().name())
                 .transactionId(payment.getTransactionId())
-                .processedAt(payment.getProcessedAt() != null ? 
+                .processedAt(payment.getProcessedAt() != null ?
                         java.time.LocalDateTime.ofInstant(payment.getProcessedAt(), java.time.ZoneId.systemDefault()) : null)
                 .build();
     }

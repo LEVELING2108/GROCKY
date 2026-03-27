@@ -14,37 +14,37 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseDTO {
-    
+public class ResponseDTO<T> {
+
     private boolean success;
     private String message;
-    private Object data;
+    private T data;
     private Map<String, String> errors;
-    
-    public static ResponseDTO success(String message, Object data) {
-        return ResponseDTO.builder()
+
+    public static <T> ResponseDTO<T> success(T data, String message) {
+        return ResponseDTO.<T>builder()
                 .success(true)
                 .message(message)
                 .data(data)
                 .build();
     }
-    
-    public static ResponseDTO success(Object data) {
-        return ResponseDTO.builder()
+
+    public static <T> ResponseDTO<T> success(T data) {
+        return ResponseDTO.<T>builder()
                 .success(true)
                 .data(data)
                 .build();
     }
-    
-    public static ResponseDTO error(String message) {
-        return ResponseDTO.builder()
+
+    public static <T> ResponseDTO<T> error(String message) {
+        return ResponseDTO.<T>builder()
                 .success(false)
                 .message(message)
                 .build();
     }
-    
-    public static ResponseDTO error(String message, Map<String, String> errors) {
-        return ResponseDTO.builder()
+
+    public static <T> ResponseDTO<T> error(String message, Map<String, String> errors) {
+        return ResponseDTO.<T>builder()
                 .success(false)
                 .message(message)
                 .errors(errors)
