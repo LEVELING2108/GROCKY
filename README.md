@@ -5,46 +5,49 @@
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 
-**GROCKY** is a full-stack online grocery management system built with Spring Boot 3, React 18, and AI-driven features for intelligent analytics and recommendations.
+**🏪 A modern, full-stack online grocery store with AI-driven recommendations, real-time analytics, and smart inventory management.**
+
+> ✨ **Features:** User Authentication • Shopping Cart • Stripe Payments • AI Recommendations • Real-Time Order Tracking • Admin Dashboard
 
 ---
 
-## 📋 Table of Contents
+## 📋 Quick Navigation
 
+- [Quick Start](#-quick-start)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
-- [Quick Start](#-quick-start)
 - [API Documentation](#-api-documentation)
 - [AI Features](#-ai-features)
 - [Testing](#-testing)
 - [Deployment](#-deployment)
+- [Troubleshooting](#-troubleshooting)
 - [Contributing](#-contributing)
-- [Support](#-support)
 
 ---
 
 ## 🚀 Features
 
 ### 🛍️ Core E-Commerce
-- ✅ **Product Management** - Browse, search, and filter groceries by category
-- ✅ **Shopping Cart** - Add items, manage quantities, persistent storage
-- ✅ **Customer Profiles** - Registration, login, and loyalty point tracking
-- ✅ **Order Tracking** - Real-time status updates with timeline view
+- ✅ **Product Catalog** - Browse, search, and filter groceries by category
+- ✅ **Shopping Cart** - Add items, manage quantities, persistent cart storage
+- ✅ **User Accounts** - Registration, login, profile management, loyalty points
+- ✅ **Order Tracking** - Real-time order status with timeline view
 - ✅ **Reviews & Ratings** - Customer feedback with verified purchase badges
-- ✅ **Secure Checkout** - Multi-step checkout with Stripe integration
+- ✅ **Secure Checkout** - Multi-step checkout with Stripe payment integration
 
 ### 🧠 AI & Analytics
-- ✅ **Demand Forecasting** - Linear Regression predicts future sales
+- ✅ **Demand Forecasting** - Linear Regression predicts future product demand
 - ✅ **Customer Segmentation** - K-Means clustering for RFM analysis
-- ✅ **Price Optimization** - Price elasticity analysis and suggestions
-- ✅ **Smart Inventory** - AI-powered reorder suggestions
-- ✅ **Admin Dashboard** - Real-time metrics and visual trends
+- ✅ **Price Optimization** - Price elasticity analysis and recommendations
+- ✅ **Smart Inventory** - AI-powered auto-reorder suggestions
+- ✅ **Admin Dashboard** - Real-time metrics, charts, and visual trends
 - ✅ **Personalized Recommendations** - AI-driven product suggestions
 
-### ⚡ Real-time Features
+### ⚡ Real-Time Features
 - ✅ **WebSocket Integration** - Live order status updates
-- ✅ **Real-time Analytics** - Live dashboard updates
+- ✅ **Real-Time Analytics** - Live dashboard metric updates
 - ✅ **Inventory Alerts** - Instant low stock notifications
 
 ---
@@ -57,151 +60,156 @@
 | Java | 17 | Core language |
 | Spring Boot | 3.2 | Application framework |
 | Spring Data JPA | - | Database ORM |
-| PostgreSQL | 15 | Database |
+| PostgreSQL | 15 | Primary database |
 | Spring Security | - | Authentication & Authorization |
-| JWT | 0.12.5 | Token-based auth |
+| JWT (jjwt) | 0.12.5 | Token-based authentication |
 | Apache Commons Math | 3.6.1 | AI/ML algorithms |
 | Stripe API | 24.22.0 | Payment processing |
-| WebSocket/STOMP | - | Real-time communication |
+| WebSocket/STOMP | - | Real-time bidirectional communication |
+| Lombok | 1.18.30 | Reduce boilerplate code |
 
 ### Frontend
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| React | 18.2 | UI framework |
-| TypeScript | 5.0 | Type safety |
-| Vite | 5.2 | Build tool |
-| React Router | 6.22 | Routing |
-| Chart.js | 4.4 | Data visualization |
-| STOMP.js | 7.0 | WebSocket client |
-| Stripe.js | 3.0 | Payment UI |
-| Lucide React | 0.363 | Icons |
+| React | 18.2 | UI component framework |
+| TypeScript | 5.0 | Type-safe JavaScript |
+| Vite | 5.2 | Fast build tool & dev server |
+| React Router | 6.22 | Client-side routing |
+| Chart.js | 4.4 | Data visualization & charts |
+| STOMP.js | 7.0 | WebSocket client library |
+| Stripe.js | 3.0 | Payment UI integration |
+| Lucide React | 0.363 | Beautiful icon library |
 
-### DevOps
-- 🐳 Docker & Docker Compose
-- 🔄 GitHub Actions (CI/CD)
-- 📊 Spring Boot Actuator (Monitoring)
+### DevOps & Tools
+- 🐳 Docker & Docker Compose - Containerization
+- 🔄 GitHub Actions - CI/CD automation
+- 📊 Spring Boot Actuator - Application monitoring
+- 🏗️ Maven - Backend build tool
+- 📦 npm - Frontend package manager
 
 ---
 
 ## 🏁 Quick Start
 
-### Option 1: Docker (Recommended - 30 seconds)
+### ⚡ Fastest Way (Docker - 30 seconds)
 
 ```bash
 # Clone the repository
 git clone https://github.com/LEVELING2108/GROCKY.git
 cd GROCKY
 
-# Start all services
+# Start all services (database, backend, frontend)
 docker-compose up -d
 
+# Wait 30 seconds for services to initialize
+
 # Access the application
-# Frontend: http://localhost:3000
-# Backend: http://localhost:8080/api
+# 🛒 Frontend: http://localhost:3000
+# 🔌 Backend API: http://localhost:8080/api
+# 💾 Database: localhost:5432
 ```
 
-### Option 2: Manual Setup
+### 🔑 Test Login Credentials
 
-#### Prerequisites
-- JDK 17+
-- Node.js 18+
-- PostgreSQL 15
-- Maven 3.6+
-
-#### 1. Database Setup
-```sql
-CREATE DATABASE grocky_db;
-CREATE USER grocky_user WITH PASSWORD 'grocky_password';
-GRANT ALL PRIVILEGES ON DATABASE grocky_db TO grocky_user;
-```
-
-```bash
-# Run schema
-psql -U grocky_user -d grocky_db -f database/schema.sql
-```
-
-#### 2. Backend
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-
-#### 3. Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### 🔑 Test Credentials
 ```
 Email: john@example.com
-Password: password
+Password: password123
+
+(Or register a new account directly on the frontend)
+```
+
+### 🛑 Stop Services
+
+```bash
+docker-compose down
+```
+
+### 🔧 Restart Services
+
+```bash
+# Restart all services
+docker-compose restart
+
+# Restart specific service
+docker-compose restart backend
+docker-compose restart frontend
+docker-compose restart db
+```
+
+### 📋 Check Service Status
+
+```bash
+# View all containers
+docker-compose ps
+
+# View logs
+docker-compose logs -f backend
+docker-compose logs -f frontend
 ```
 
 ---
 
 ## 📖 API Documentation
 
-### Authentication
+### Authentication Endpoints
 ```http
-POST   /api/auth/register          # Register new customer
-POST   /api/auth/login             # Login customer
-GET    /api/auth/me                # Get current user profile
+POST   /api/auth/register          Register new customer
+POST   /api/auth/login             Customer login
+GET    /api/auth/me                Get current user profile
 ```
 
-### Products
+### Product Endpoints
 ```http
-GET    /api/products               # Get all products (paginated)
-GET    /api/products/{id}          # Get product by ID
-GET    /api/products/categories    # Get all categories
-GET    /api/products/search        # Search products
-POST   /api/products               # Create product (ADMIN)
-PUT    /api/products/{id}          # Update product (ADMIN)
-DELETE /api/products/{id}          # Delete product (ADMIN)
+GET    /api/products               Get all products (paginated)
+GET    /api/products/{id}          Get product by ID
+GET    /api/products/categories    Get all categories
+GET    /api/products/search        Search products by keyword
+POST   /api/products               Create product (ADMIN only)
+PUT    /api/products/{id}          Update product (ADMIN only)
+DELETE /api/products/{id}          Delete product (ADMIN only)
 ```
 
-### Orders
+### Order Endpoints
 ```http
-GET    /api/orders                 # Get all orders (ADMIN)
-GET    /api/orders/{id}            # Get order by ID
-GET    /api/orders/customer/{id}   # Get customer orders
-POST   /api/orders                 # Create new order
-PUT    /api/orders/{id}/status     # Update order status (ADMIN)
-PUT    /api/orders/{id}/cancel     # Cancel order
+GET    /api/orders                 Get all orders (ADMIN only)
+GET    /api/orders/{id}            Get order by ID
+GET    /api/orders/customer/{id}   Get orders by customer
+POST   /api/orders                 Create new order
+PUT    /api/orders/{id}/status     Update order status (ADMIN)
+PUT    /api/orders/{id}/cancel     Cancel order
 ```
 
-### Cart
+### Cart Endpoints
 ```http
-GET    /api/cart/{customerId}                    # Get customer cart
-POST   /api/cart/{customerId}/items              # Add item to cart
-PUT    /api/cart/{customerId}/items/{productId}  # Update cart item
-DELETE /api/cart/{customerId}/items/{productId}  # Remove from cart
-DELETE /api/cart/{customerId}/clear              # Clear cart
+GET    /api/cart/{customerId}                    Get customer cart
+POST   /api/cart/{customerId}/items              Add item to cart
+PUT    /api/cart/{customerId}/items/{productId}  Update cart item quantity
+DELETE /api/cart/{customerId}/items/{productId}  Remove item from cart
+DELETE /api/cart/{customerId}/clear              Clear entire cart
 ```
 
-### Payments
+### Payment Endpoints
 ```http
-POST   /api/payments/{orderId}/create-intent  # Create Stripe PaymentIntent
-PUT    /api/payments/{id}/process             # Process payment
-GET    /api/payments/order/{orderId}          # Get payments for order
+POST   /api/payments/{orderId}/create-intent  Create Stripe PaymentIntent
+PUT    /api/payments/{id}/process             Process payment confirmation
+GET    /api/payments/order/{orderId}          Get payments for order
 ```
 
-### Analytics & AI
+### Analytics & AI Endpoints
 ```http
-GET    /api/analytics/dashboard                      # Get dashboard metrics
-GET    /api/analytics/sales                          # Get sales report
-GET    /api/analytics/inventory                      # Get inventory report
-POST   /api/analytics/ai/forecast                    # Run AI forecasting (ADMIN)
-GET    /api/analytics/ai/customers/segmentation      # Get customer segments (ADMIN)
-GET    /api/analytics/ai/pricing/optimization        # Get price optimization (ADMIN)
+GET    /api/analytics/dashboard                       Get dashboard metrics
+GET    /api/analytics/sales                           Get sales report
+GET    /api/analytics/inventory                       Get inventory report
+POST   /api/analytics/ai/forecast                     Run AI forecasting (ADMIN)
+GET    /api/analytics/ai/customers/segmentation       Get customer segments (ADMIN)
+GET    /api/analytics/ai/pricing/optimization         Get price optimization (ADMIN)
 ```
 
-### Recommendations
+### Recommendation Endpoints
 ```http
-GET    /api/recommendations/trending                           # Trending products
-GET    /api/recommendations/personal/{customerId}              # Personalized recommendations
-GET    /api/recommendations/frequently-together/{productId}    # Frequently bought together
+GET    /api/recommendations/trending                            Get trending products
+GET    /api/recommendations/personal/{customerId}               Get personalized recommendations
+GET    /api/recommendations/frequently-together/{productId}     Get frequently bought together
 ```
 
 ---
@@ -209,35 +217,43 @@ GET    /api/recommendations/frequently-together/{productId}    # Frequently boug
 ## 🧠 AI Features Explained
 
 ### 1. Demand Forecasting 📈
-Uses **Linear Regression** to analyze 30 days of historical sales data.
+
+**Algorithm:** Linear Regression
 
 **What it does:**
+- Analyzes 30 days of historical sales data
 - Predicts daily demand for each product
-- Updates AI demand scores automatically
-- Suggests reorders when predicted demand > stock
+- Automatically updates AI demand scores
+- Suggests reorders when predicted demand exceeds current stock
 
-**Endpoint:** `POST /api/analytics/ai/forecast`
+**API Endpoint:** `POST /api/analytics/ai/forecast`
+
+---
 
 ### 2. Customer Segmentation 🎯
-Implements **K-Means Clustering** for RFM analysis.
 
-**Segments:**
-- **HIGH_VALUE** - High spending, frequent purchases
-- **LOYAL** - Regular purchases, recent activity
-- **AT_RISK** - Long time since last purchase
-- **REGULAR** - Average behavior
+**Algorithm:** K-Means Clustering (RFM Analysis)
 
-**Endpoint:** `GET /api/analytics/ai/customers/segmentation`
+**Customer Segments:**
+- **HIGH_VALUE** - High spending, frequent purchases, recent activity
+- **LOYAL** - Regular purchases, recent activity, moderate spending
+- **AT_RISK** - Long time since last purchase, may need re-engagement
+- **REGULAR** - Average behavior across all metrics
+
+**API Endpoint:** `GET /api/analytics/ai/customers/segmentation`
+
+---
 
 ### 3. Price Optimization 💰
-Analyzes **price elasticity** for optimal pricing.
 
-**Elasticity Types:**
-- **HIGHLY_INELASTIC** - Can increase price
-- **ELASTIC** - Should decrease price
-- **UNIT_ELASTIC** - Current price is optimal
+**Algorithm:** Price Elasticity Analysis
 
-**Endpoint:** `GET /api/analytics/ai/pricing/optimization`
+**Elasticity Classifications:**
+- **HIGHLY_INELASTIC** (elasticity > -0.5) - Can increase price without losing demand
+- **ELASTIC** (elasticity < -2) - Should decrease price to increase revenue
+- **UNIT_ELASTIC** (-2 ≤ elasticity ≤ -0.5) - Current price is near optimal
+
+**API Endpoint:** `GET /api/analytics/ai/pricing/optimization`
 
 ---
 
@@ -255,16 +271,42 @@ cd frontend
 npm test
 ```
 
+### Run All Tests
+```bash
+# Backend tests with coverage
+cd backend
+./mvnw clean test jacoco:report
+
+# View coverage report
+open backend/target/site/jacoco/index.html
+```
+
 ---
 
 ## 🚀 Deployment
 
-### Production Build
+### Docker Deployment (Production)
+
+```bash
+# Build optimized images
+docker-compose build --no-cache
+
+# Start services
+docker-compose up -d
+
+# Monitor logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+### Manual Production Build
 
 #### Backend
 ```bash
 cd backend
-./mvnw clean package
+./mvnw clean package -DskipTests
 java -jar target/grocky-backend-1.0.0.jar
 ```
 
@@ -272,76 +314,151 @@ java -jar target/grocky-backend-1.0.0.jar
 ```bash
 cd frontend
 npm run build
-```
-
-### Docker Deployment
-```bash
-# Build images
-docker-compose build
-
-# Start services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
+# Serve dist/ folder with Nginx or similar
 ```
 
 ---
 
-## 🔒 Security
+## 🔒 Security Features
 
-- 🔐 JWT authentication (24-hour expiration)
-- 🔒 BCrypt password hashing
-- 🛡️ Role-based access control (CUSTOMER, ADMIN)
-- 🔏 CORS configuration
-- 💳 Secure payment processing (Stripe)
-- ✅ Input validation
+- 🔐 **JWT Authentication** - Secure token-based auth with 24-hour expiration
+- 🔒 **BCrypt Password Hashing** - Industry-standard password encryption
+- 🛡️ **Role-Based Access Control** - CUSTOMER and ADMIN roles
+- 🔏 **CORS Configuration** - Controlled cross-origin requests
+- 💳 **PCI-Compliant Payments** - Stripe handles all card data
+- ✅ **Input Validation** - Server-side validation on all endpoints
+- 🔑 **Environment Variables** - Sensitive config stored securely
 
 ---
 
 ## 📱 Responsive Design
 
-Fully responsive on all devices:
-- 🖥️ Desktop (1200px+)
-- 📱 Tablet (768px - 1199px)
-- 📱 Mobile (320px - 767px)
+Fully responsive across all devices:
+
+- 🖥️ **Desktop** (1200px and above)
+- 📱 **Tablet** (768px - 1199px)
+- 📱 **Mobile** (320px - 767px)
 
 ---
 
 ## 📝 Sample Data
 
-Database includes:
-- 3 customers
-- 10 products (multiple categories)
-- 3 sample orders
-- Reviews & ratings
-- 7 days of analytics data
+The database includes pre-populated sample data:
+
+- **3 Customers** - John Doe, Jane Smith, Bob Wilson
+- **10 Products** - Multiple categories (Produce, Dairy, Bakery, Meat, etc.)
+- **3 Sample Orders** - Different statuses for testing
+- **Product Reviews** - Verified purchase reviews
+- **7 Days Analytics** - Sales and order metrics
 
 ---
 
 ## 🔧 Configuration
 
-### Backend (application.yml)
-```yaml
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/grocky_db
-    username: grocky_user
-    password: grocky_password
+### Backend Environment Variables
 
-jwt:
-  secret: ${JWT_SECRET}
-  expiration: 86400000
+Create `backend/.env` file:
 
-stripe:
-  secret-key: ${STRIPE_SECRET_KEY}
-  public-key: ${STRIPE_PUBLIC_KEY}
+```env
+# Database
+SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/grocky_db
+SPRING_DATASOURCE_USERNAME=grocky_user
+SPRING_DATASOURCE_PASSWORD=grocky_password
+
+# JWT Secret (Change in production!)
+JWT_SECRET=YourSecretKeyForJWTTokenGenerationMustBeLongEnough2024
+JWT_EXPIRATION=86400000
+
+# Stripe API Keys (Get from https://dashboard.stripe.com/test/apikeys)
+STRIPE_SECRET_KEY=sk_test_your_test_secret_key
+STRIPE_PUBLIC_KEY=pk_test_your_test_public_key
+
+# Email Configuration (Optional - for Gmail)
+SPRING_MAIL_HOST=smtp.gmail.com
+SPRING_MAIL_PORT=587
+SPRING_MAIL_USERNAME=your-email@gmail.com
+SPRING_MAIL_PASSWORD=your-app-password
 ```
 
-### Frontend
-Update `frontend/src/services/apiService.ts`:
-```typescript
-const BASE_URL = 'http://localhost:8080/api';
+### Frontend Environment Variables
+
+Create `frontend/.env` file:
+
+```env
+# API Configuration
+VITE_API_BASE_URL=http://localhost:8080/api
+
+# Stripe Public Key
+VITE_STRIPE_PUBLIC_KEY=pk_test_your_test_public_key
+
+# Application Info
+VITE_APP_NAME=GROCKY
+VITE_APP_VERSION=1.0.0
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Frontend shows "Failed to fetch" or can't connect to backend
+
+```bash
+# 1. Check if backend is running
+docker-compose ps backend
+
+# 2. Restart backend
+docker-compose restart backend
+
+# 3. Wait 30 seconds for backend to fully start
+# 4. Refresh your browser
+```
+
+### Backend won't start or keeps restarting
+
+```bash
+# 1. Check backend logs
+docker-compose logs backend
+
+# 2. Ensure database is healthy first
+docker-compose ps db
+
+# 3. Restart database, wait, then restart backend
+docker-compose restart db
+sleep 15
+docker-compose restart backend
+```
+
+### Database connection errors
+
+```bash
+# 1. Verify database container is running
+docker-compose ps db
+
+# 2. Check database logs
+docker-compose logs db
+
+# 3. Test database connection
+docker exec grocky-db pg_isready -U grocky_user
+```
+
+### Port already in use (8080 or 3000)
+
+```bash
+# Find what's using the port
+netstat -ano | findstr :8080
+netstat -ano | findstr :3000
+
+# Stop the conflicting process or change port in docker-compose.yml
+```
+
+### Out of disk space
+
+```bash
+# Clean up unused Docker resources
+docker system prune -a
+
+# Remove old images
+docker image prune -a
 ```
 
 ---
@@ -350,13 +467,32 @@ const BASE_URL = 'http://localhost:8080/api';
 
 Contributions are welcome! Please follow these steps:
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
+3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** to the branch (`git push origin feature/AmazingFeature`)
+5. **Open** a Pull Request
+
+### Development Guidelines
+
+- Follow existing code style
+- Write meaningful commit messages
+- Add tests for new features
+- Update documentation as needed
+- Ensure all tests pass before submitting PR
 
 See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for detailed guidelines.
+
+---
+
+## 📞 Support
+
+### Need Help?
+
+- 📖 **Documentation** - This README
+- 🐛 **Bug Reports** - [Create an issue](https://github.com/LEVELING2108/GROCKY/issues)
+- 💡 **Feature Requests** - [Create an issue](https://github.com/LEVELING2108/GROCKY/issues)
+- 💬 **Questions** - [Create an issue](https://github.com/LEVELING2108/GROCKY/issues)
 
 ---
 
@@ -365,7 +501,6 @@ See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for detailed guidelines.
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
 
 ## 🙏 Acknowledgments
 
