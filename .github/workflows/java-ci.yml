@@ -36,18 +36,25 @@ jobs:
         cache: maven
 
     - name: Build with Maven
-      run: mvn -B package --file backend/pom.xml
+      run: mvn -B package --file backend/pom.xml -DskipTests
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/grocky_db
         SPRING_DATASOURCE_USERNAME: grocky_user
         SPRING_DATASOURCE_PASSWORD: grocky_password
+        JWT_SECRET: TestSecretKeyForTestingPurposesOnly1234567890
+        STRIPE_SECRET_KEY: sk_test_mock
+        STRIPE_PUBLIC_KEY: pk_test_mock
 
     - name: Run Tests
-      run: mvn test --file backend/pom.xml -Dspring.profiles.active=test
+      run: mvn test --file backend/pom.xml
       env:
+        SPRING_PROFILES_ACTIVE: test
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/grocky_db
         SPRING_DATASOURCE_USERNAME: grocky_user
         SPRING_DATASOURCE_PASSWORD: grocky_password
+        JWT_SECRET: TestSecretKeyForTestingPurposesOnly1234567890
+        STRIPE_SECRET_KEY: sk_test_mock
+        STRIPE_PUBLIC_KEY: pk_test_mock
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
