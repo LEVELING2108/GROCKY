@@ -69,7 +69,7 @@ CREATE TABLE orders (
     delivery_zip VARCHAR(10),
     delivery_instructions TEXT,
     scheduled_delivery_date TIMESTAMP,
-    ai_predicted_delivery_time INTERVAL,
+    ai_predicted_delivery_time VARCHAR(255),
     payment_status VARCHAR(20) DEFAULT 'PENDING',
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

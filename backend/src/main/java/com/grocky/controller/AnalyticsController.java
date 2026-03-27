@@ -39,10 +39,4 @@ public class AnalyticsController {
         analyticsService.recordDailyMetrics();
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping("/ai/forecast")
-    public ResponseEntity<Void> runAIForecasting() {
-        analyticsService.runAIForecasting();
-        return ResponseEntity.ok().build();
-    }
 }

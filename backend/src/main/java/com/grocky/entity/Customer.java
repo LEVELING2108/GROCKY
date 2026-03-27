@@ -53,6 +53,7 @@ public class Customer {
     private Integer loyaltyPoints = 0;
 
     @Column(name = "ai_preference_profile", columnDefinition = "jsonb")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     private String aiPreferenceProfile;
 
     @Column(name = "is_active")
