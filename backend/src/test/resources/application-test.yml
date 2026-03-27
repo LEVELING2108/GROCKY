@@ -4,7 +4,7 @@ spring:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
     username: sa
-    password: 
+    password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -16,6 +16,9 @@ spring:
   h2:
     console:
       enabled: true
+  mail:
+    host: localhost
+    port: 0
 
 # JWT Configuration
 jwt:
@@ -28,15 +31,10 @@ stripe:
   secret-key: sk_test_mock
   public-key: pk_test_mock
 
-# Disable email in tests
-spring:
-  mail:
-    host: localhost
-    port: 0
-
 # Logging
 logging:
   level:
     root: WARN
     com.grocky: DEBUG
     org.springframework: WARN
+    org.hibernate: WARN
