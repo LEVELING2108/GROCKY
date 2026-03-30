@@ -1,6 +1,6 @@
 import React from 'react';
 import { Settings as SettingsIcon, Bell, Lock, Store, Mail } from 'lucide-react';
-import '../../../styles/AdminCommon.css';
+import '../../styles/AdminCommon.css';
 
 const Settings: React.FC = () => {
   return (

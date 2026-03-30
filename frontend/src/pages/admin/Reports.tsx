@@ -1,6 +1,6 @@
 import React from 'react';
 import { FileText, Download, Calendar, DollarSign } from 'lucide-react';
-import '../../../styles/AdminCommon.css';
+import '../../styles/AdminCommon.css';
 
 const Reports: React.FC = () => {
   const reports = [

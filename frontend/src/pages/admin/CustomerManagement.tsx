@@ -1,6 +1,6 @@
 import React from 'react';
 import { Users, Mail, Phone, MapPin, Calendar, DollarSign, ShoppingCart } from 'lucide-react';
-import '../../../styles/AdminCommon.css';
+import '../../styles/AdminCommon.css';
 
 const CustomerManagement: React.FC = () => {
   const customers = [

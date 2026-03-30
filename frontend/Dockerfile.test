@@ -1,9 +1,0 @@
-FROM node:18-alpine
-WORKDIR /app
-COPY . .
-RUN echo "=== Checking src folder ===" && ls -la src/
-RUN echo "=== Checking services ===" && ls -la src/services/
-RUN echo "=== Checking services/apiService.ts ===" && cat src/services/apiService.ts | head -5
-RUN echo "=== Checking pages ===" && ls -la src/pages/
-RUN echo "=== Checking pages/admin ===" && ls -la src/pages/admin/
-RUN echo "Build context test complete"
