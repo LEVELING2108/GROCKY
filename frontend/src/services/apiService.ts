@@ -1,4 +1,5 @@
-const BASE_URL = 'http://localhost:8080/api';
+// Use relative path - nginx will proxy to backend
+const BASE_URL = '/api';
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');
@@ -80,9 +81,16 @@ export const apiService = {
     getProfile: async () => {
       return apiService.private<any>('/customers/profile');
     },
+
+    updateProfile: async (data: any) => {
+      return apiService.private<any>('/customers/profile', {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    },
   },
 
-  // Product endpoints
+  // Product endpoints (Public)
   products: {
     getAll: async (page = 0, size = 20, filters?: any) => {
       let query = `?page=${page}&size=${size}`;
@@ -90,19 +98,40 @@ export const apiService = {
       if (filters?.search) query += `&search=${filters.search}`;
       if (filters?.minPrice) query += `&minPrice=${filters.minPrice}`;
       if (filters?.maxPrice) query += `&maxPrice=${filters.maxPrice}`;
-      return apiService.private<any>(`/products${query}`);
+      return apiService.get<any>(`/products${query}`);
     },
 
     getById: async (id: string) => {
-      return apiService.private<any>(`/products/${id}`);
+      return apiService.get<any>(`/products/${id}`);
     },
 
     search: async (keyword: string) => {
-      return apiService.private<any>(`/products/search?keyword=${keyword}`);
+      return apiService.get<any>(`/products/search?keyword=${keyword}`);
     },
 
     getCategories: async () => {
-      return apiService.private<any>('/products/categories');
+      return apiService.get<any>('/products/categories');
+    },
+
+    // Admin product management
+    create: async (data: any) => {
+      return apiService.private<any>('/admin/products', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+
+    update: async (id: string, data: any) => {
+      return apiService.private<any>(`/admin/products/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    },
+
+    delete: async (id: string) => {
+      return apiService.private<any>(`/admin/products/${id}`, {
+        method: 'DELETE',
+      });
     },
   },
 
@@ -148,8 +177,17 @@ export const apiService = {
       });
     },
 
-    getByCustomer: async (customerId: string, page = 0, size = 10) => {
-      return apiService.private<any>(`/orders/customer/${customerId}?page=${page}&size=${size}`);
+    getAll: async (page = 0, size = 50, status?: string) => {
+      let query = `?page=${page}&size=${size}`;
+      if (status) query += `&status=${status}`;
+      return apiService.private<any>(`/admin/orders${query}`);
+    },
+
+    getByCustomer: async (customerId?: string, page = 0, size = 10) => {
+      if (customerId) {
+        return apiService.private<any>(`/orders/customer/${customerId}?page=${page}&size=${size}`);
+      }
+      return apiService.private<any>(`/orders/my-orders?page=${page}&size=${size}`);
     },
 
     getById: async (id: string) => {
@@ -161,7 +199,7 @@ export const apiService = {
     },
 
     updateStatus: async (id: string, status: string) => {
-      return apiService.private<any>(`/orders/${id}/status`, {
+      return apiService.private<any>(`/admin/orders/${id}/status`, {
         method: 'PUT',
         body: JSON.stringify({ status }),
       });

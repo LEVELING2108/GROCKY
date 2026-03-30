@@ -1,0 +1,11 @@
+FROM node:18-alpine
+WORKDIR /app
+COPY . .
+RUN npm ci
+RUN echo "Testing file access..."
+RUN cat src/context/AuthContext.tsx | head -1
+RUN cat src/pages/Profile.tsx | head -3
+RUN ls -la src/context/
+RUN ls -la src/pages/
+RUN npm run build 2>&1 || echo "Build failed - checking files again"
+RUN cat src/context/AuthContext.tsx | wc -l

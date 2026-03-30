@@ -1,0 +1,12 @@
+# Only exclude node_modules and dist
+node_modules/
+dist/
+build/
+.git/
+*.log
+.env
+.dockerignore
+Dockerfile
+Dockerfile.debug
+*.md
+.gitignore

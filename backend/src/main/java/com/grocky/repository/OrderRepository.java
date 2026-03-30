@@ -64,7 +64,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     );
 
     @Query("SELECT DISTINCT p.category FROM Order o JOIN o.items oi JOIN oi.product p " +
-           "WHERE o.customer.id = :customerId ORDER BY o.createdAt DESC")
+           "WHERE o.customer.id = :customerId")
     List<String> findRecentCategoriesByCustomer(@Param("customerId") UUID customerId);
 
     @Query("SELECT DISTINCT p FROM Order o JOIN o.items oi JOIN oi.product p " +

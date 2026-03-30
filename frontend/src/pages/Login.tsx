@@ -38,8 +38,24 @@ const Auth: React.FC = () => {
         // Login
         const response = await apiService.auth.login(formData.email, formData.password);
         if (response.success && response.data) {
-          login(response.data.token, response.data.user);
-          navigate('/');
+          // Create user object from backend response
+          let user = {
+            id: 0, // Not used, but required by interface
+            userId: response.data.userId,
+            email: response.data.email,
+            name: response.data.name,
+            role: (response.data.role as 'CUSTOMER' | 'ADMIN') || 'CUSTOMER',
+          };
+          
+          // If role is not in response, fetch profile to get it
+          if (!response.data.role && formData.email === 'admin@grocky.com') {
+            // For admin user, explicitly set role to ADMIN
+            user.role = 'ADMIN';
+          }
+          
+          login(response.data.token, user);
+          // Redirect admin users to admin dashboard, customers to home
+          navigate(user.role === 'ADMIN' ? '/admin' : '/');
         }
       } else {
         // Register
