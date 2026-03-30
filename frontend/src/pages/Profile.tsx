@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { apiService } from '../../services/apiService';
+import { useAuth } from '../context/AuthContext';
+import { apiService } from '../services/apiService';
 import { User, Mail, Phone, MapPin, Edit2, Save, X, Package, CreditCard, MapPin as MapPinIcon } from 'lucide-react';
-import '../../styles/Auth.css';
-import '../../styles/Profile.css';
+import '../styles/Auth.css';
+import '../styles/Profile.css';
 
 const Profile: React.FC = () => {
   const { user, token } = useAuth();

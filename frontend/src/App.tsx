@@ -23,6 +23,24 @@ import Analytics from './pages/admin/Analytics';
 import Reports from './pages/admin/Reports';
 import Settings from './pages/admin/Settings';
 
+// Separate component for admin routes with AdminLayout
+const AdminRoutes: React.FC = () => {
+  return (
+    <AdminLayout>
+      <Routes>
+        <Route path="/products" element={<ProductManagement />} />
+        <Route path="/inventory" element={<InventoryManagement />} />
+        <Route path="/orders" element={<OrderFulfillment />} />
+        <Route path="/customers" element={<CustomerManagement />} />
+        <Route path="/analytics" element={<Analytics />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/" element={<Navigate to="/admin" replace />} />
+      </Routes>
+    </AdminLayout>
+  );
+};
+
 const App: React.FC = () => {
   return (
     <AuthProvider>
@@ -31,7 +49,7 @@ const App: React.FC = () => {
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
-            
+
             {/* Customer Routes */}
             <Route path="/" element={
               <ProtectedRoute>
@@ -68,7 +86,7 @@ const App: React.FC = () => {
                 <><Header /><OrderHistory /></>
               </ProtectedRoute>
             } />
-            
+
             {/* Admin Routes */}
             <Route path="/admin" element={
               <ProtectedRoute adminOnly>
@@ -84,24 +102,6 @@ const App: React.FC = () => {
         </Router>
       </CartProvider>
     </AuthProvider>
-  );
-};
-
-// Separate component for admin routes with AdminLayout
-const AdminRoutes: React.FC = () => {
-  return (
-    <AdminLayout>
-      <Routes>
-        <Route path="/products" element={<ProductManagement />} />
-        <Route path="/inventory" element={<InventoryManagement />} />
-        <Route path="/orders" element={<OrderFulfillment />} />
-        <Route path="/customers" element={<CustomerManagement />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/" element={<Navigate to="/admin" replace />} />
-      </Routes>
-    </AdminLayout>
   );
 };
 

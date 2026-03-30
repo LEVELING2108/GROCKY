@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { apiService } from '../../services/apiService';
+import { useAuth } from '../context/AuthContext';
+import { apiService } from '../services/apiService';
 import { Package, Clock, CheckCircle, Truck, AlertCircle, ChevronRight, Calendar, DollarSign } from 'lucide-react';
-import '../../styles/OrderHistory.css';
+import '../styles/OrderHistory.css';
 
 interface Order {
   id: string;
