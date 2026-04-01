@@ -23,6 +23,7 @@ public class CustomerDetailsServiceImpl implements UserDetailsService {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Customer not found with email: " + email));
 
+        String roleName = customer.getRole() != null ? customer.getRole().name() : "CUSTOMER";
         return new User(
                 customer.getEmail(),
                 customer.getPasswordHash(),
@@ -30,7 +31,7 @@ public class CustomerDetailsServiceImpl implements UserDetailsService {
                 true, // accountNonExpired
                 true, // credentialsNonExpired
                 true, // accountNonLocked
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + roleName))
         );
     }
 }

@@ -21,18 +21,20 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    
+
     private final ProductRepository productRepository;
     private final InventoryLogRepository inventoryLogRepository;
     private final NotificationService notificationService;
-    
+
     @Transactional(readOnly = true)
-    public Page<ProductDTO> getAllProducts(Pageable pageable) {
+    public List<ProductDTO> getAllProducts(int page, int size) {
         log.debug("Fetching all products");
-        return productRepository.findAll(pageable)
-                .map(this::convertToDTO);
+        return productRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
-    
+
     @Transactional(readOnly = true)
     public ProductDTO getProductById(UUID id) {
         log.debug("Fetching product by id: {}", id);
@@ -40,190 +42,95 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return convertToDTO(product);
     }
-    
-    @Transactional(readOnly = true)
-    public Page<ProductDTO> getProductsByCategory(String category, Pageable pageable) {
-        log.debug("Fetching products by category: {}", category);
-        return productRepository.findByCategory(category, pageable)
-                .map(this::convertToDTO);
-    }
-    
-    @Transactional(readOnly = true)
-    public List<String> getAllCategories() {
-        log.debug("Fetching all categories");
-        return productRepository.findAllCategories();
-    }
-    
-    @Transactional(readOnly = true)
-    public List<String> getSubcategoriesByCategory(String category) {
-        log.debug("Fetching subcategories for: {}", category);
-        return productRepository.findSubcategoriesByCategory(category);
-    }
-    
-    @Transactional(readOnly = true)
-    public Page<ProductDTO> searchProducts(String keyword, Pageable pageable) {
-        log.debug("Searching products with keyword: {}", keyword);
-        return productRepository.searchProducts(keyword, pageable)
-                .map(this::convertToDTO);
-    }
 
-    @Transactional(readOnly = true)
-    public List<ProductDTO> autocomplete(String query) {
-        log.debug("Fetching autocomplete suggestions for: {}", query);
-        return productRepository.findTop10ByNameContainingIgnoreCase(query)
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-    
-    @Transactional(readOnly = true)
-    public List<ProductDTO> getLowStockProducts() {
-        log.debug("Fetching low stock products");
-        return productRepository.findLowStockProducts()
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-    
-    @Transactional(readOnly = true)
-    public List<ProductDTO> getOutOfStockProducts() {
-        log.debug("Fetching out of stock products");
-        return productRepository.findOutOfStockProducts()
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-    
-    @Transactional(readOnly = true)
-    public List<ProductDTO> getExpiringProducts(LocalDate date) {
-        log.debug("Fetching expiring products");
-        return productRepository.findExpiringProducts(date)
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-    
-    @Transactional(readOnly = true)
-    public List<ProductDTO> getHighDemandProducts(BigDecimal threshold) {
-        log.debug("Fetching high demand products");
-        return productRepository.findHighDemandProducts(threshold)
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-    
-    @Transactional(readOnly = true)
-    public List<ProductDTO> getProductsNeedingReorder() {
-        log.debug("Fetching products needing reorder");
-        return productRepository.findProductsNeedingReorder()
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-    
     @Transactional
-    public ProductDTO createProduct(ProductDTO productDTO) {
-        log.info("Creating new product: {}", productDTO.getName());
-        
+    public ProductDTO createProduct(ProductDTO.CreateProductRequest request) {
+        log.info("Creating new product: {}", request.getName());
+
         Product product = Product.builder()
-                .name(productDTO.getName())
-                .description(productDTO.getDescription())
-                .category(productDTO.getCategory())
-                .subcategory(productDTO.getSubcategory())
-                .price(productDTO.getPrice())
-                .costPrice(productDTO.getCostPrice())
-                .stockQuantity(productDTO.getStockQuantity())
-                .reorderLevel(productDTO.getReorderLevel())
-                .unit(productDTO.getUnit())
-                .brand(productDTO.getBrand())
-                .supplier(productDTO.getSupplier())
-                .expiryDate(productDTO.getExpiryDate())
-                .imageUrl(productDTO.getImageUrl())
-                .isAvailable(productDTO.getIsAvailable())
-                .discountPercentage(productDTO.getDiscountPercentage())
-                .aiDemandScore(productDTO.getAiDemandScore())
-                .aiReorderSuggestion(productDTO.getAiReorderSuggestion())
+                .name(request.getName())
+                .description(request.getDescription())
+                .category(request.getCategory())
+                .subcategory(request.getSubcategory())
+                .price(request.getPrice())
+                .costPrice(request.getCostPrice())
+                .stockQuantity(request.getStockQuantity())
+                .reorderLevel(request.getReorderLevel())
+                .unit(request.getUnit())
+                .brand(request.getBrand())
+                .supplier(request.getSupplier())
+                .expiryDate(request.getExpiryDate())
+                .imageUrl(request.getImageUrl())
+                .isAvailable(request.getIsAvailable())
+                .discountPercentage(request.getDiscountPercentage())
                 .build();
-        
+
         Product saved = productRepository.save(product);
-        
+
         // Log initial inventory
         logInventoryChange(saved, "INITIAL", saved.getStockQuantity(), 0, saved.getStockQuantity(), "Initial stock", null, "SYSTEM");
-        
+
         return convertToDTO(saved);
     }
-    
+
     @Transactional
-    public ProductDTO updateProduct(UUID id, ProductDTO.ProductUpdate update) {
+    public ProductDTO updateProduct(UUID id, ProductDTO.UpdateProductRequest request) {
         log.info("Updating product: {}", id);
-        
+
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-        
-        if (update.getName() != null) product.setName(update.getName());
-        if (update.getDescription() != null) product.setDescription(update.getDescription());
-        if (update.getCategory() != null) product.setCategory(update.getCategory());
-        if (update.getSubcategory() != null) product.setSubcategory(update.getSubcategory());
-        if (update.getPrice() != null) product.setPrice(update.getPrice());
-        if (update.getCostPrice() != null) product.setCostPrice(update.getCostPrice());
-        if (update.getStockQuantity() != null) {
+
+        if (request.getName() != null) product.setName(request.getName());
+        if (request.getDescription() != null) product.setDescription(request.getDescription());
+        if (request.getCategory() != null) product.setCategory(request.getCategory());
+        if (request.getSubcategory() != null) product.setSubcategory(request.getSubcategory());
+        if (request.getPrice() != null) product.setPrice(request.getPrice());
+        if (request.getCostPrice() != null) product.setCostPrice(request.getCostPrice());
+        if (request.getStockQuantity() != null) {
             int oldStock = product.getStockQuantity();
-            product.setStockQuantity(update.getStockQuantity());
-            logInventoryChange(product, "ADJUSTMENT", 
-                    update.getStockQuantity() - oldStock, oldStock, 
-                    update.getStockQuantity(), "Stock adjustment", null, "SYSTEM");
+            product.setStockQuantity(request.getStockQuantity());
+            logInventoryChange(product, "ADJUSTMENT",
+                    request.getStockQuantity() - oldStock, oldStock,
+                    request.getStockQuantity(), "Stock adjustment", null, "SYSTEM");
         }
-        if (update.getReorderLevel() != null) product.setReorderLevel(update.getReorderLevel());
-        if (update.getUnit() != null) product.setUnit(update.getUnit());
-        if (update.getBrand() != null) product.setBrand(update.getBrand());
-        if (update.getSupplier() != null) product.setSupplier(update.getSupplier());
-        if (update.getExpiryDate() != null) product.setExpiryDate(update.getExpiryDate());
-        if (update.getImageUrl() != null) product.setImageUrl(update.getImageUrl());
-        if (update.getIsAvailable() != null) product.setIsAvailable(update.getIsAvailable());
-        if (update.getDiscountPercentage() != null) product.setDiscountPercentage(update.getDiscountPercentage());
-        
+        if (request.getReorderLevel() != null) product.setReorderLevel(request.getReorderLevel());
+        if (request.getUnit() != null) product.setUnit(request.getUnit());
+        if (request.getBrand() != null) product.setBrand(request.getBrand());
+        if (request.getSupplier() != null) product.setSupplier(request.getSupplier());
+        if (request.getExpiryDate() != null) product.setExpiryDate(request.getExpiryDate());
+        if (request.getImageUrl() != null) product.setImageUrl(request.getImageUrl());
+        if (request.getIsAvailable() != null) product.setIsAvailable(request.getIsAvailable());
+        if (request.getDiscountPercentage() != null) product.setDiscountPercentage(request.getDiscountPercentage());
+
         Product updated = productRepository.save(product);
         return convertToDTO(updated);
     }
-    
+
     @Transactional
-    public ProductDTO updateStock(UUID id, ProductDTO.StockUpdate stockUpdate) {
-        log.info("Updating stock for product {}: {} (type: {})", id, stockUpdate.getQuantityChange(), stockUpdate.getChangeType());
-        
+    public ProductDTO updateStock(UUID id, int quantity) {
+        log.info("Updating stock for product {}: {}", id, quantity);
+
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-        
+
         int oldStock = product.getStockQuantity();
-        int newStock = oldStock + stockUpdate.getQuantityChange();
-        
-        if (newStock < 0) {
-            throw new RuntimeException("Insufficient stock");
-        }
-        
-        product.setStockQuantity(newStock);
-        
-        // Auto-update reorder suggestion based on stock level
-        if (newStock <= product.getReorderLevel()) {
+        product.setStockQuantity(quantity);
+
+        // Auto-update reorder suggestion
+        if (quantity <= product.getReorderLevel()) {
             product.setAiReorderSuggestion(true);
-            // Trigger low stock alert
             notificationService.sendLowStockAlert(List.of(product));
         } else {
             product.setAiReorderSuggestion(false);
         }
-        
+
         Product updated = productRepository.save(product);
-        
-        logInventoryChange(product, stockUpdate.getChangeType(), 
-                stockUpdate.getQuantityChange(), oldStock, newStock, 
-                stockUpdate.getReason(), null, "SYSTEM");
-        
+
+        logInventoryChange(product, "ADJUSTMENT",
+                quantity - oldStock, oldStock, quantity,
+                "Stock level update", null, "ADMIN");
+
         return convertToDTO(updated);
-    }
-    
-    @Transactional
-    public void deleteProduct(UUID id) {
-        log.info("Deleting product: {}", id);
-        productRepository.deleteById(id);
     }
     
     @Transactional(readOnly = true)

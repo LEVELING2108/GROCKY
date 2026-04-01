@@ -19,6 +19,7 @@ CREATE TABLE customers (
     zip_code VARCHAR(10),
     loyalty_points INTEGER DEFAULT 0,
     ai_preference_profile JSONB,
+    role VARCHAR(20) DEFAULT 'CUSTOMER',
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -210,11 +211,14 @@ CREATE TRIGGER update_cart_updated_at BEFORE UPDATE ON cart
 -- SAMPLE DATA FOR TESTING
 -- ============================================
 
--- Sample Customers
-INSERT INTO customers (name, email, password_hash, phone, address, city, state, zip_code, loyalty_points) VALUES
-('John Doe', 'john@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '555-0101', '123 Main St', 'New York', 'NY', '10001', 150),
-('Jane Smith', 'jane@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '555-0102', '456 Oak Ave', 'Los Angeles', 'CA', '90001', 280),
-('Bob Wilson', 'bob@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '555-0103', '789 Pine Rd', 'Chicago', 'IL', '60601', 75);
+-- Sample Customers (including Admin)
+-- Admin password: admin123 (BCrypt: $2b$10$GDksCSQ1v9gI9t4QzkTMduRjnCr6Gx2OgwwSVfv866egO6qgW04Km)
+-- Customer password: password (BCrypt: $2b$10$zHaUzelqKHyO6f3MlOHoze0qGI87Sva2f74y82Rf1FWVS/JZCyBiC)
+INSERT INTO customers (name, email, password_hash, phone, address, city, state, zip_code, loyalty_points, role) VALUES
+('Admin User', 'admin@grocky.com', '$2b$10$GDksCSQ1v9gI9t4QzkTMduRjnCr6Gx2OgwwSVfv866egO6qgW04Km', '555-0100', '100 Admin St', 'New York', 'NY', '10001', 0, 'ADMIN'),
+('John Doe', 'john@example.com', '$2b$10$zHaUzelqKHyO6f3MlOHoze0qGI87Sva2f74y82Rf1FWVS/JZCyBiC', '555-0101', '123 Main St', 'New York', 'NY', '10001', 150, 'CUSTOMER'),
+('Jane Smith', 'jane@example.com', '$2b$10$zHaUzelqKHyO6f3MlOHoze0qGI87Sva2f74y82Rf1FWVS/JZCyBiC', '555-0102', '456 Oak Ave', 'Los Angeles', 'CA', '90001', 280, 'CUSTOMER'),
+('Bob Wilson', 'bob@example.com', '$2b$10$zHaUzelqKHyO6f3MlOHoze0qGI87Sva2f74y82Rf1FWVS/JZCyBiC', '555-0103', '789 Pine Rd', 'Chicago', 'IL', '60601', 75, 'CUSTOMER');
 
 -- Sample Products
 INSERT INTO products (name, description, category, subcategory, price, cost_price, stock_quantity, reorder_level, unit, brand, supplier, ai_demand_score) VALUES

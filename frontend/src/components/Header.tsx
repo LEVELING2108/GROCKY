@@ -48,7 +48,7 @@ const Header: React.FC = () => {
 
           {isAuthenticated ? (
             <div className="user-menu">
-              <span className="user-name">Hi, {user?.name.split(' ')[0]}</span>
+              <span className="user-name">Hi, {user?.name ? user.name.split(' ')[0] : 'User'}</span>
               <button onClick={logout} className="logout-btn"><LogOut size={20} /></button>
             </div>
           ) : (

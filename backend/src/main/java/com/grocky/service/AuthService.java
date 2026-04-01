@@ -52,42 +52,44 @@ public class AuthService {
         
         String token = jwtService.generateToken(savedCustomer.getEmail());
         String refreshToken = jwtService.generateRefreshToken(savedCustomer.getEmail());
-        
+
         return AuthDTO.AuthResponse.builder()
                 .token(token)
                 .refreshToken(refreshToken)
                 .email(savedCustomer.getEmail())
                 .name(savedCustomer.getName())
                 .userId(savedCustomer.getId())
+                .role(savedCustomer.getRole() != null ? savedCustomer.getRole().name() : "CUSTOMER")
                 .build();
     }
-    
+
     public AuthDTO.AuthResponse login(AuthDTO.LoginRequest request) {
         log.info("Authenticating user: {}", request.getEmail());
-        
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        
+
         Customer customer = customerRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
-        
+
         if (!customer.getIsActive()) {
             throw new RuntimeException("Account is deactivated");
         }
-        
+
         String token = jwtService.generateToken(customer.getEmail());
         String refreshToken = jwtService.generateRefreshToken(customer.getEmail());
-        
+
         return AuthDTO.AuthResponse.builder()
                 .token(token)
                 .refreshToken(refreshToken)
                 .email(customer.getEmail())
                 .name(customer.getName())
                 .userId(customer.getId())
+                .role(customer.getRole() != null ? customer.getRole().name() : "CUSTOMER")
                 .build();
     }
     

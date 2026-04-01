@@ -60,6 +60,7 @@ public class AuthDTO {
         private String email;
         private String name;
         private java.util.UUID userId;
+        private String role;
     }
 
     @Data

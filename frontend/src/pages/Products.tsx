@@ -1,64 +1,126 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import ProductCard from '../components/ProductCard';
 import { apiService } from '../services/apiService';
+import { Search } from 'lucide-react';
 import '../styles/Products.css';
 
 const Products: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState<any[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('name');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        // Demo data
-        const demoData = [
-          { id: 1, name: 'Organic Bananas', price: 1.99, category: 'Fruits' },
-          { id: 2, name: 'Red Apples', price: 2.49, category: 'Fruits' },
-          { id: 3, name: 'Fresh Spinach', price: 3.00, category: 'Vegetables' },
-          { id: 4, name: 'Carrots 1kg', price: 1.50, category: 'Vegetables' },
-          { id: 5, name: 'Whole Milk', price: 4.20, category: 'Dairy' },
-          { id: 6, name: 'Greek Yogurt', price: 5.00, category: 'Dairy' },
-          { id: 7, name: 'Sourdough Bread', price: 3.50, category: 'Bakery' },
-          { id: 8, name: 'Chocolate Croissant', price: 2.75, category: 'Bakery' },
-        ];
-        
-        setProducts(demoData);
-        
-        // Real API
-        // const data = await apiService.get('/products');
-        // setProducts(data);
-      } catch (err) {
-        console.error("Error loading products", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const searchFromUrl = searchParams.get('search') || '';
+    if (searchFromUrl) {
+      setSearchTerm(searchFromUrl);
+    }
+  }, [searchParams]);
 
-    fetchProducts();
+  useEffect(() => {
+    loadProducts();
   }, []);
 
-  const filteredProducts = selectedCategory === 'All' 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
+  useEffect(() => {
+    filterAndSortProducts();
+  }, [products, selectedCategory, searchTerm, sortBy]);
+
+  const loadProducts = async () => {
+    setLoading(true);
+    try {
+      const response = await apiService.products.getAll();
+      if (response.success && response.data) {
+        setProducts(response.data);
+      }
+    } catch (err) {
+      console.error("Error loading products", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterAndSortProducts = () => {
+    let filtered = [...products];
+
+    // Category filter
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(p => p.category === selectedCategory);
+    }
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Sort
+    if (sortBy === 'name') {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'price-low') {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-high') {
+      filtered.sort((a, b) => b.price - a.price);
+    }
+
+    setFilteredProducts(filtered);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchParams(searchTerm ? { search: searchTerm } : {});
+  };
 
   return (
     <div className="container products-page">
-      <Sidebar 
-        selectedCategory={selectedCategory} 
-        setSelectedCategory={setSelectedCategory} 
+      <Sidebar
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
       />
-      
+
       <main className="products-main">
         <div className="products-header">
-          <h2>{selectedCategory} Products</h2>
-          <p>Showing {filteredProducts.length} results</p>
+          <div className="header-left">
+            <h2>{selectedCategory === 'All' ? 'All Products' : selectedCategory}</h2>
+            <p>{filteredProducts.length} results</p>
+          </div>
+
+          <div className="header-right">
+            <form className="search-form" onSubmit={handleSearch}>
+              <Search size={18} />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </form>
+
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="sort-select">
+              <option value="name">Sort by Name</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </div>
         </div>
 
         {loading ? (
-          <div className="loading">Gathering fresh products...</div>
+          <div className="loading">Loading fresh products...</div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="no-products">
+            <p>No products found</p>
+            {searchTerm && (
+              <button className="btn btn-secondary" onClick={() => setSearchTerm('')}>
+                Clear Search
+              </button>
+            )}
+          </div>
         ) : (
           <div className="products-grid">
             {filteredProducts.map(product => (

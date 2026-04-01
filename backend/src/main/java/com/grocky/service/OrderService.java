@@ -24,7 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
@@ -33,9 +33,33 @@ public class OrderService {
     private final PaymentRepository paymentRepository;
     private final OrderWebSocketService orderWebSocketService;
     private final NotificationService notificationService;
-    
+
     @Transactional(readOnly = true)
-    public Page<OrderDTO> getAllOrders(Pageable pageable) {
+    public List<OrderDTO> getAllOrders(int page, int size, String status) {
+        log.debug("Fetching all orders");
+        List<Order> orders;
+        if (status != null && !status.isEmpty()) {
+            orders = orderRepository.findByStatus(OrderStatus.valueOf(status.toUpperCase()));
+        } else {
+            orders = orderRepository.findAll();
+        }
+        return orders.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Object getOrderStats() {
+        return new Object() {
+            public long totalOrders = orderRepository.count();
+            public long pendingOrders = orderRepository.countByStatus(OrderStatus.PENDING);
+            public long processingOrders = orderRepository.countByStatus(OrderStatus.PROCESSING);
+            public long deliveredOrders = orderRepository.countByStatus(OrderStatus.DELIVERED);
+        };
+    }
+
+    @Transactional(readOnly = true)
+    public Page<OrderDTO> getAllOrdersPage(Pageable pageable) {
         log.debug("Fetching all orders");
         return orderRepository.findAll(pageable)
                 .map(this::convertToDTO);

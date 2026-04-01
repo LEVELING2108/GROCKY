@@ -73,12 +73,63 @@ public class ProductDTO {
     
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
+
     // Computed fields
     private BigDecimal finalPrice;
     private Double averageRating;
     private Long reviewCount;
-    
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CreateProductRequest {
+        @NotBlank(message = "Product name is required")
+        private String name;
+        private String description;
+        @NotBlank(message = "Category is required")
+        private String category;
+        private String subcategory;
+        @NotNull(message = "Price is required")
+        private BigDecimal price;
+        private BigDecimal costPrice;
+        @Builder.Default
+        private Integer stockQuantity = 0;
+        @Builder.Default
+        private Integer reorderLevel = 10;
+        private String unit = "piece";
+        private String brand;
+        private String supplier;
+        private LocalDate expiryDate;
+        private String imageUrl;
+        @Builder.Default
+        private Boolean isAvailable = true;
+        @Builder.Default
+        private BigDecimal discountPercentage = BigDecimal.ZERO;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateProductRequest {
+        private String name;
+        private String description;
+        private String category;
+        private String subcategory;
+        private BigDecimal price;
+        private BigDecimal costPrice;
+        private Integer stockQuantity;
+        private Integer reorderLevel;
+        private String unit;
+        private String brand;
+        private String supplier;
+        private LocalDate expiryDate;
+        private String imageUrl;
+        private Boolean isAvailable;
+        private BigDecimal discountPercentage;
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -100,7 +151,7 @@ public class ProductDTO {
         private Boolean isAvailable;
         private BigDecimal discountPercentage;
     }
-    
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -108,10 +159,10 @@ public class ProductDTO {
     public static class StockUpdate {
         @NotNull(message = "Quantity change is required")
         private Integer quantityChange;
-        
+
         @NotBlank(message = "Change type is required")
         private String changeType;
-        
+
         private String reason;
     }
 }
