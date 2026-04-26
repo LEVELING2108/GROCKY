@@ -35,17 +35,10 @@ public class OrderService {
     private final NotificationService notificationService;
 
     @Transactional(readOnly = true)
-    public List<OrderDTO> getAllOrders(int page, int size, String status) {
+    public Page<OrderDTO> getAllOrders(Pageable pageable) {
         log.debug("Fetching all orders");
-        List<Order> orders;
-        if (status != null && !status.isEmpty()) {
-            orders = orderRepository.findByStatus(OrderStatus.valueOf(status.toUpperCase()));
-        } else {
-            orders = orderRepository.findAll();
-        }
-        return orders.stream()
-                .map(this::convertToDTO)
-                .toList();
+        return orderRepository.findAll(pageable)
+                .map(this::convertToDTO);
     }
 
     @Transactional(readOnly = true)
@@ -58,13 +51,6 @@ public class OrderService {
         };
     }
 
-    @Transactional(readOnly = true)
-    public Page<OrderDTO> getAllOrdersPage(Pageable pageable) {
-        log.debug("Fetching all orders");
-        return orderRepository.findAll(pageable)
-                .map(this::convertToDTO);
-    }
-    
     @Transactional(readOnly = true)
     public OrderDTO getOrderById(UUID id) {
         log.debug("Fetching order by id: {}", id);

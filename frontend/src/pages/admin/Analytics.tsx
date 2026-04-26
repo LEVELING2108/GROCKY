@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../../../../services/apiService';
+import { apiService } from '@services/apiService';
 import { BarChart, LineChart, DollarSign, TrendingUp, Package, Users, ShoppingCart } from 'lucide-react';
-import '../../../styles/Analytics.css';
+import '@styles/Analytics.css';
 
 const Analytics: React.FC = () => {
   const [loading, setLoading] = useState(true);

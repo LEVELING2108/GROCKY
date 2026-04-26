@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../../../services/apiService';
-import { webSocketService } from '../../../services/webSocketService';
+import { apiService } from '@services/apiService';
+import { webSocketService } from '@services/webSocketService';
 import { Search, Filter, Eye, CheckCircle, Truck, Package, Clock, X, Calendar } from 'lucide-react';
-import '../../../styles/OrderFulfillment.css';
+import '@styles/OrderFulfillment.css';
 
 interface Order {
   id: string;

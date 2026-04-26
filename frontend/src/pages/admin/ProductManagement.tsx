@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../../../services/apiService';
+import { apiService } from '@services/apiService';
 import {
   Plus, Edit2, Trash2, Search, Filter, Package, DollarSign,
   AlertTriangle, CheckCircle, X, Save, Upload
 } from 'lucide-react';
-import '../../../styles/ProductManagement.css';
+import '@styles/ProductManagement.css';
 
 interface Product {
   id: string;

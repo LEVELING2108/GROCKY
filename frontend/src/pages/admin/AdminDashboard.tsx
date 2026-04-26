@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../../../../services/apiService';
-import { webSocketService } from '../../../../services/webSocketService';
+import { apiService } from '@services/apiService';
+import { webSocketService } from '@services/webSocketService';
 import {
   DollarSign, ShoppingCart, Package, Users, TrendingUp, TrendingDown,
   AlertTriangle, Clock, CheckCircle, Truck
 } from 'lucide-react';
-import '../../../styles/AdminDashboard.css';
+import '@styles/AdminDashboard.css';
 
 interface DashboardMetrics {
   totalRevenue: number;
