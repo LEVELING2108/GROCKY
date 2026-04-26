@@ -6,8 +6,8 @@ spring:
   # Database Configuration
   datasource:
     url: jdbc:postgresql://localhost:5432/grocky_db
-    username: grocky_user
-    password: grocky_password
+    username: postgres
+    password: Pune@2314110523
     driver-class-name: org.postgresql.Driver
   
   # JPA Configuration

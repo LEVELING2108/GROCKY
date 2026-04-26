@@ -5,6 +5,8 @@ import com.grocky.dto.ResponseDTO;
 import com.grocky.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,8 @@ public class AdminProductController {
     public ResponseEntity<ResponseDTO<List<ProductDTO>>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "100") int size) {
-        return ResponseEntity.ok(ResponseDTO.success(productService.getAllProducts(page, size), "Products retrieved successfully"));
+        Page<ProductDTO> productPage = productService.getAllProducts(PageRequest.of(page, size));
+        return ResponseEntity.ok(ResponseDTO.success(productPage.getContent(), "Products retrieved successfully"));
     }
 
     @GetMapping("/{id}")
@@ -40,7 +43,7 @@ public class AdminProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO<ProductDTO>> updateProduct(
             @PathVariable UUID id,
-            @Valid @RequestBody ProductDTO.UpdateProductRequest request) {
+            @Valid @RequestBody ProductDTO.ProductUpdate request) {
         return ResponseEntity.ok(ResponseDTO.success(productService.updateProduct(id, request), "Product updated successfully"));
     }
 
@@ -53,7 +56,7 @@ public class AdminProductController {
     @PatchMapping("/{id}/stock")
     public ResponseEntity<ResponseDTO<ProductDTO>> updateStock(
             @PathVariable UUID id,
-            @RequestParam int quantity) {
-        return ResponseEntity.ok(ResponseDTO.success(productService.updateStock(id, quantity), "Stock updated successfully"));
+            @RequestBody ProductDTO.StockUpdate stockUpdate) {
+        return ResponseEntity.ok(ResponseDTO.success(productService.updateStock(id, stockUpdate), "Stock updated successfully"));
     }
 }

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../../../../services/apiService';
+import { apiService } from '@services/apiService';
 import {
   AlertTriangle, Package, Search, Filter, Plus, Minus, Save,
   TrendingUp, TrendingDown, CheckCircle, X
 } from 'lucide-react';
-import '../../../styles/InventoryManagement.css';
+import '@styles/InventoryManagement.css';
 
 interface Product {
   id: string;

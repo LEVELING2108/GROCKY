@@ -27,9 +27,42 @@ public class ProductService {
     private final NotificationService notificationService;
 
     @Transactional(readOnly = true)
-    public List<ProductDTO> getAllProducts(int page, int size) {
+    public Page<ProductDTO> getAllProducts(Pageable pageable) {
         log.debug("Fetching all products");
-        return productRepository.findAll()
+        return productRepository.findAll(pageable)
+                .map(this::convertToDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductDTO> getProductsByCategory(String category, Pageable pageable) {
+        log.debug("Fetching products by category: {}", category);
+        return productRepository.findByCategory(category, pageable)
+                .map(this::convertToDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getAllCategories() {
+        log.debug("Fetching all categories");
+        return productRepository.findAllCategories();
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getSubcategoriesByCategory(String category) {
+        log.debug("Fetching subcategories for category: {}", category);
+        return productRepository.findSubcategoriesByCategory(category);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductDTO> searchProducts(String keyword, Pageable pageable) {
+        log.debug("Searching products with keyword: {}", keyword);
+        return productRepository.searchProducts(keyword, pageable)
+                .map(this::convertToDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductDTO> autocomplete(String query) {
+        log.debug("Autocompleting with query: {}", query);
+        return productRepository.findTop10ByNameContainingIgnoreCase(query)
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
@@ -74,7 +107,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO updateProduct(UUID id, ProductDTO.UpdateProductRequest request) {
+    public ProductDTO updateProduct(UUID id, ProductDTO.ProductUpdate request) {
         log.info("Updating product: {}", id);
 
         Product product = productRepository.findById(id)
@@ -107,17 +140,18 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO updateStock(UUID id, int quantity) {
-        log.info("Updating stock for product {}: {}", id, quantity);
+    public ProductDTO updateStock(UUID id, ProductDTO.StockUpdate stockUpdate) {
+        log.info("Updating stock for product {}: {}", id, stockUpdate.getQuantityChange());
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         int oldStock = product.getStockQuantity();
-        product.setStockQuantity(quantity);
+        int newStock = oldStock + stockUpdate.getQuantityChange();
+        product.setStockQuantity(newStock);
 
         // Auto-update reorder suggestion
-        if (quantity <= product.getReorderLevel()) {
+        if (newStock <= product.getReorderLevel()) {
             product.setAiReorderSuggestion(true);
             notificationService.sendLowStockAlert(List.of(product));
         } else {
@@ -126,11 +160,28 @@ public class ProductService {
 
         Product updated = productRepository.save(product);
 
-        logInventoryChange(product, "ADJUSTMENT",
-                quantity - oldStock, oldStock, quantity,
-                "Stock level update", null, "ADMIN");
+        logInventoryChange(product, stockUpdate.getChangeType(),
+                stockUpdate.getQuantityChange(), oldStock, newStock,
+                stockUpdate.getReason() != null ? stockUpdate.getReason() : "Stock update", null, "ADMIN");
 
         return convertToDTO(updated);
+    }
+
+    @Transactional
+    public void deleteProduct(UUID id) {
+        log.info("Deleting product: {}", id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        productRepository.delete(product);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductDTO> getLowStockProducts() {
+        log.debug("Fetching low stock products");
+        return productRepository.findLowStockProducts()
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
     
     @Transactional(readOnly = true)
